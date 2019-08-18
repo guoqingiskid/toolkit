@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <initializer_list>
 
-/******** 该hash表大部分接口都未实现，后续需要自行实现，这里我们使用的是链表法解决hash冲突 ******/
+/******** hash表大部分接口都未实现，这里我们使用的是链表法解决hash冲突 ******/
 template<typename Key, typename T, typename hasher = std::hash<Key> >
 class HashTable
 {
