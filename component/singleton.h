@@ -10,7 +10,7 @@ struct has_no_destroy
 }
 
 template<typename T>
-class Singleton : noncopyable
+class Singleton 
 {
  public:
   static T& instance()

@@ -1,0 +1,59 @@
+********************************************************************************************
+cmake_minimum_required(VERSION 2.8.12)
+project(media_server)
+
+set(CMAKE_CXX_STANDARD 11)
+
+add_compile_options(-std=c++11)
+add_definitions(-D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_FORMAT_MACROS)
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib64 /usr/local/lib/ $ENV{HADOOP_HOME}/lib/native $ENV{JAVA_HOME}/lib/server)
+#link_directories(/usr/local/lib64 /usr/local/lib/ $ENV{HADOOP_HOME}/lib/native $ENV{JAVA_HOME}/jre/lib/amd64/server/)
+add_executable(media_server
+        proto/media_server.pb.cc
+        util/util.cpp
+        cache/h264_cache.cpp
+        cache/h264_cache_reader.cpp
+        service/h264_dump.cpp service/h264_dump.h
+        service/h264_key.cpp service/h264_key.h
+        service/nn_helper.h service/nn_helper.cpp
+        service/nn_req.cpp service/nn_req.h
+        service/nn_rep.cpp service/nn_rep.h
+        service/nn_sub.cpp service/nn_sub.h
+        service/nn_pub.cpp service/nn_pub.h
+        service/nn_helper_set.cpp service/nn_helper_set.h
+        session/h264_session.cpp session/h264_session.h
+        session/h264_source.cpp session/h264_source.h
+        session/h264_session_map.cpp session/h264_session_map.h
+        test/test_util.h test/test_util.cpp
+        test/media_server_sample.cpp util/args_info.h
+        util/thread_safe_queue.h service/h264_parse.cpp service/h264_parse.h)
+
+target_link_libraries(media_server nanomsg protobuf tinyxml2 SDL2  avutil avcodec avformat swresample swscale hdfs jvm)
+
+
+add_executable(push_video
+        proto/media_server.pb.cc
+        util/util.cpp
+        cache/h264_cache.cpp
+        cache/h264_cache_reader.cpp
+        service/h264_dump.cpp service/h264_dump.h
+        service/h264_key.cpp service/h264_key.h
+        service/nn_helper.h service/nn_helper.cpp
+        service/nn_req.cpp service/nn_req.h
+        service/nn_rep.cpp service/nn_rep.h
+        service/nn_sub.cpp service/nn_sub.h
+        service/nn_pub.cpp service/nn_pub.h
+        service/nn_helper_set.cpp service/nn_helper_set.h
+        session/h264_session.cpp session/h264_session.h
+        session/h264_source.cpp session/h264_source.h
+        session/h264_session_map.cpp session/h264_session_map.h
+        test/test_util.h test/test_util.cpp
+        test/push_video_sample.cpp
+        util/args_info.h service/h264_parse.cpp service/h264_parse.h)
+
+target_link_libraries(push_video nanomsg protobuf SDL2 tinyxml2 avutil avcodec avformat swresample swscale hdfs jvm)
+
+add_executable(h264_gen test/h264_gen.cpp)
+
+target_link_libraries(h264_gen hdfs jvm avutil avcodec avformat swresample swscale)
