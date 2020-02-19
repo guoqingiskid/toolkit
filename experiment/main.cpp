@@ -39,7 +39,7 @@ struct MyBase<std::string>
 };
 
 
-int main(int argc, char **argv)
+int main1(int argc, char **argv)
 {
 	//study1
 	MyContainer<int, std::vector<int> > my1;
@@ -72,4 +72,28 @@ int main(int argc, char **argv)
 
 
 	return 0;
+}
+
+#include<stdio.h>
+#include<netdb.h>
+#include<stdlib.h>
+#include<arpa/inet.h>
+#include<string.h>
+int main(int argc, char *argv[])
+{
+    if(argc<2)
+    {
+        printf("the argc need more two\n");
+        return 1;
+    }
+    struct hostent *host;
+    const char *add = argv[1];
+    char p[30];
+    inet_pton(AF_INET, add, p);
+    host = gethostbyaddr(p, strlen(p), AF_INET);
+	if(host)
+    	printf("hostname:%s\n",host->h_name);
+	else
+		printf("no thing!\n");
+    return 0;
 }

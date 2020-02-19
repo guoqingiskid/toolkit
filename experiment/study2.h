@@ -10,10 +10,11 @@ struct TypeList
 	typedef T2 Second;
 };
 
-struct Nullype
+struct NullType
 {};
 
-#define TYPELIST_1(type1) TypeList<type1, Nullype>
+#define TYPELIST_0() NullType;
+#define TYPELIST_1(type1) TypeList<type1, NullType>
 #define TYPELIST_2(type1, type2) TypeList<type1, TYPELIST_1(type2)>
 #define TYPELIST_3(type1, type2, type3) TypeList<type1, TYPELIST_2(type2, type3)>
 #define TYPELIST_4(type1, type2, type3, type4) TypeList<type1, TYPELIST_3(type2, type3, type4)>
@@ -29,7 +30,7 @@ template<typename TL>
 struct Length{};
 
 template<>
-struct Length<Nullype>
+struct Length<NullType>
 {
 	enum{Value = 0};
 };
@@ -56,6 +57,11 @@ struct TypeListAt<TypeList<T1, T2>, Index>
 	typedef typename TypeListAt<T2, Index - 1>::Result Result;
 };
 
+template<uint32_t Index>
+struct TypeListAt<NullType, Index>
+{
+	typedef NullType Result;
+};
 
 //TypeList IndexOf
 template<typename TL, typename T>
@@ -63,7 +69,7 @@ struct IndexOf
 {};
 
 template<typename T>
-struct IndexOf<Nullype, T>
+struct IndexOf<NullType, T>
 {
 	enum{Index = -1};
 };
@@ -88,13 +94,13 @@ template<typename TL, typename T>
 struct Append{};
 
 template<>
-struct Append<Nullype, Nullype>
+struct Append<NullType, NullType>
 {
-	typedef Nullype Result;
+	typedef NullType Result;
 };
 
 template<typename T>
-struct Append<Nullype, T>
+struct Append<NullType, T>
 {
 	typedef TYPELIST_1(T) Result;
 };
@@ -110,9 +116,9 @@ template<typename TL, typename T>
 struct Remove{};
 
 template<typename T>
-struct Remove<Nullype, T>
+struct Remove<NullType, T>
 {
-	typedef Nullype Result;
+	typedef NullType Result;
 };
 
 template<typename T, typename Lst>
@@ -132,9 +138,9 @@ template<typename TL, typename T>
 struct RemoveAll{};
 
 template<typename T>
-struct RemoveAll<Nullype, T>
+struct RemoveAll<NullType, T>
 {
-	typedef Nullype Result;
+	typedef NullType Result;
 };
 template<typename T, typename Lst>
 struct RemoveAll<TypeList<T, Lst>, T>
@@ -153,9 +159,9 @@ template<typename TL>
 struct RemoveDuplicate{};
 
 template<>
-struct RemoveDuplicate<Nullype>
+struct RemoveDuplicate<NullType>
 {
-	typedef Nullype Result;
+	typedef NullType Result;
 };
 
 template<typename Fst, typename Lst>
@@ -174,9 +180,9 @@ template<typename TL, typename T, typename U>
 struct Replace{};
 
 template<typename T, typename U>
-struct Replace<Nullype, T, U>
+struct Replace<NullType, T, U>
 {
-	typedef Nullype Result;
+	typedef NullType Result;
 };
 
 template<typename T, typename Lst, typename U>
@@ -200,7 +206,7 @@ class GenClass : public Base<BuiltIn>
 {};
 
 template<template<typename>class Base>
-class GenClass<Nullype, Base>{};
+class GenClass<NullType, Base>{};
 
 template<typename Fst, typename Lst, template<typename>class Base>
 class GenClass<TypeList<Fst, Lst>, Base> :
