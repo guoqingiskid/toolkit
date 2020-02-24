@@ -1,4 +1,7 @@
 #program once
+#include <thread>
+#include <mutex>
+#include <assert.h>
 
 template<typename T>
 struct has_no_destroy
@@ -13,20 +16,22 @@ template<typename T>
 class Singleton 
 {
  public:
-  static T& instance()
+ template<typename...Args>
+  static T& instance(Args&& ...args)
   {
-    pthread_once(&ponce_, &Singleton::init);
-    assert(value_ != NULL);
-    return *value_;
+    std::call_once(&_onceFlag, &Singleton::init<Args...>, std::forward<Args>(args)...);
+    assert(_instance != NULL);
+    return *_instance;
   }
 
  private:
   Singleton();
   ~Singleton();
 
-  static void init()
+  template<typename... Args>
+  static void init(Args&& ...args)
   {
-    value_ = new T();
+    _instance = new T(std::forward<Args>(args)...);
     if (!detail::has_no_destroy<T>::value)
     {
       ::atexit(destroy);
@@ -38,17 +43,17 @@ class Singleton
     typedef char T_must_be_complete_type[sizeof(T) == 0 ? -1 : 1];
     T_must_be_complete_type dummy; (void) dummy;
 
-    delete value_;
-    value_ = NULL;
+    delete _instance;
+    _instance = NULL;
   }
 
  private:
-  static pthread_once_t ponce_;
-  static T*             value_;
+  static std::once_flag 	_onceFlag;
+  static T*             	_instance;
 };
 
 template<typename T>
-pthread_once_t Singleton<T>::ponce_ = PTHREAD_ONCE_INIT;
+std::once_flag Singleton<T>::_onceFlag;
 
 template<typename T>
-T* Singleton<T>::value_ = NULL;
+T* Singleton<T>::_instance = NULL;
