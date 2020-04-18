@@ -79,7 +79,17 @@ int main1(int argc, char **argv)
 #include<stdlib.h>
 #include<arpa/inet.h>
 #include<string.h>
-int main(int argc, char *argv[])
+#include "study6.h"
+int main()
+{
+	std::string name("world");
+	Person p1(std::move(name));
+	Person p2(p1);
+
+	return 1;
+}
+
+int main2(int argc, char *argv[])
 {
     if(argc<2)
     {
